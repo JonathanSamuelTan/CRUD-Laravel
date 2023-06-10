@@ -29,7 +29,7 @@
     
             <!-- Modal body with form -->
             <div class="modal-body">
-            <form method="post" action="{{route('store')}}">
+            <form method="post" action="{{route('store')}}" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
                 <label for="teamInput">Team</label>
@@ -39,6 +39,13 @@
                 <label for="nameInput">Name</label>
                 <input type="text" class="form-control" id="nameInput" name="name" required>
                 </div>
+                
+                {{-- Image upload --}}
+                <div class="form-group">
+                  <label for="nameInput">Picture</label>
+                  <input type="file" class="form-control" id="nameInput" name="picture" required>
+                </div>
+
             </div>
     
             <!-- Modal footer with submit button -->
@@ -57,6 +64,7 @@
           <tr>
             <th>Team</th>
             <th>Driver</th>
+            <th>Picture</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -65,6 +73,7 @@
           <tr>
             <td>{{$driver->team}}</td>
             <td>{{$driver->name}}</td>
+            <td><img src="{{ asset('storage/img/'.$driver->picture) }}" alt="image" width="100px" height="100px"></td>
             <td>
                 <form action="{{ route('delete', $driver->id) }}" method="POST">
                     @csrf
@@ -89,7 +98,7 @@
                 
                             <!-- Modal body with form -->
                             <div class="modal-body">
-                                <form method="post" action="{{ route('update', $driver->id) }}">
+                                <form method="post" action="{{ route('update', $driver->id) }}" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
                                     <div class="form-group">
@@ -100,6 +109,14 @@
                                         <label for="nameInput">Name</label>
                                         <input type="text" class="form-control" id="nameInput" name="name" value="{{ $driver->name }}">
                                     </div>
+                                    {{-- display current img --}}
+                                    <img src="{{ asset('storage/img/'.$driver->picture) }}" alt="image" width="100px" height="100px">
+                                    {{-- Image upload --}}
+                                    <div class="form-group">
+                                      <label for="nameInput">Picture</label>
+                                      <input type="file" class="form-control" id="nameInput" name="picture">
+                                    </div>
+                                    
                             </div>
                 
                             <!-- Modal footer with submit button -->

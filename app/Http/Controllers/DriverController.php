@@ -22,11 +22,15 @@ class DriverController extends Controller
      */
     public function store(Request $request)
     {
-       DriverModel::Create([
+        $pict = $request->name .".". $request->file('picture')->getClientOriginalExtension();
+        // save to public/storage/img
+        $request->file('picture')->storeAs('public/img', $pict);
+        DriverModel::Create([
            'name' => $request->name,
-           'team' => $request->team
-       ]);
-       return redirect()->route('welcome');
+           'team' => $request->team,
+            'picture' => $pict           
+        ]);
+        return redirect()->route('welcome');
     }
 
     /**
@@ -34,9 +38,21 @@ class DriverController extends Controller
      */
     public function update(Request $request, string $id)
     {
+
         $driver = DriverModel::find($id);
+
+        // check if user upload new picture
+        $pict = "";
+        if($request->hasFile('picture')){
+            $pict = $request->name .".". $request->file('picture')->getClientOriginalExtension();
+            // save to public/storage/img
+            $request->file('picture')->storeAs('public/img', $pict);
+        }else{
+            $pict = $driver->picture;
+        }
         $driver->name = $request->name;
         $driver->team = $request->team;
+        $driver->picture = $pict;
         $driver->save();
         return redirect()->route('welcome');
     }
@@ -47,6 +63,8 @@ class DriverController extends Controller
     public function destroy(string $id)
     {
         $driver = DriverModel::find($id);
+        // delete picture
+        unlink(storage_path('app/public/img/'.$driver->picture));
         $driver->delete();
         return redirect()->route('welcome');
     }
